@@ -27,7 +27,7 @@ namespace Dsw2025Tpi.Data.Migrations
                     b.Property<Guid>("CustomerId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("customerId");
+                        .HasColumnName("CustomerId");
 
                     b.Property<string>("Email")
                         .IsRequired()

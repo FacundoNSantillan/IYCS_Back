@@ -89,7 +89,8 @@ namespace Dsw2025Tpi.Application.Services
                     var newCustomer = new Customer(
                     registerModel.Username,
                     registerModel.Email,
-                    "Sin teléfono"
+                    "Sin teléfono",
+                    user.Id
                     );
                     await _repository.Add(newCustomer);
                 }

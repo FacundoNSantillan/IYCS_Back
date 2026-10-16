@@ -10,14 +10,16 @@ namespace Dsw2025Tpi.Domain.Entities
 {
     public class Customer : EntityBase
     {
-        public Customer(string name, string email, string phoneNumber) 
+        public Customer(string name, string email, string phoneNumber, string userId) 
         {
+            UserId = userId;
             Name = name;
             Email = email;
             PhoneNumber = phoneNumber;
            
         }
 
+        public string UserId { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
