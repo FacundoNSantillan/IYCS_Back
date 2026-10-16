@@ -26,10 +26,10 @@ namespace Dsw2025Tpi.Application.Services
 
             if (!string.IsNullOrEmpty(request.UserName))
             {
-                user = await _repository.First<Customer>(u => u.Name == request.UserName);
+                user = await _repository.First<Customer>(u => u.UserId == request.UserName);
 
                 if (user == null)
-                    throw new BadRequestException($"El usuario '{request.UserName}' no existe en la base de datos");
+                    throw new BadRequestException($"No existe un cliente asociado al usuario '{request.UserName}'");
 
                 finalCustomerId = user.CustomerId;
             }

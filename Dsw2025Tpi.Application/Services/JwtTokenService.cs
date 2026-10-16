@@ -34,6 +34,7 @@ public class JwtTokenService
         var claims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.Sub, username),
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
