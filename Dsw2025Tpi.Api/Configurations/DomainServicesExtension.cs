@@ -14,7 +14,7 @@ public static class DomainServicesConfigurationExtension
     {
         services.AddDbContext<Dsw2025TpiContext>(options =>
         {
-            options.UseSqlServer(configuration.GetConnectionString("Dsw2025TpiDb"));
+            options.UseSqlServer(configuration.GetConnectionString("Dsw2025TpiDb"), sql => sql.EnableRetryOnFailure());
             
         });
 

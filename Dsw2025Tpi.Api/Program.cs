@@ -102,6 +102,7 @@ public class Program
             .AddJwtBearer(options =>
             {
                 options.SaveToken = true;
+                options.MapInboundClaims = false;
                 options.TokenValidationParameters = new TokenValidationParameters 
                 { 
                     ValidateIssuer = false,
@@ -125,11 +126,11 @@ public class Program
         builder.Services.AddDomainServices(builder.Configuration);
         builder.Services.AddDbContext<AuthenticateContext>(options =>
         {
-            options.UseSqlServer(builder.Configuration.GetConnectionString("AuthenticateDb"));
+            options.UseSqlServer(builder.Configuration.GetConnectionString("AuthenticateDb"), sql => sql.EnableRetryOnFailure());
         });
         builder.Services.AddDbContext<Dsw2025TpiContext>(options =>
         {
-            options.UseSqlServer(builder.Configuration.GetConnectionString("Dsw2025TpiDb"));
+            options.UseSqlServer(builder.Configuration.GetConnectionString("Dsw2025TpiDb"), sql => sql.EnableRetryOnFailure());
         });
 
         builder.Services.AddScoped<JwtTokenService>();
@@ -147,8 +148,14 @@ public class Program
 
         var app = builder.Build();
 
+        using (var scope = app.Services.CreateScope())
+        {
+            scope.ServiceProvider.GetRequiredService<AuthenticateContext>().Database.Migrate();
+            scope.ServiceProvider.GetRequiredService<Dsw2025TpiContext>().Database.Migrate();
+        }
+
         // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
+        if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("Swagger:Enabled"))
         {
             app.UseSwagger();
             app.UseSwaggerUI();
