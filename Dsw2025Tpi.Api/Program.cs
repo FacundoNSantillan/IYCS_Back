@@ -52,7 +52,11 @@ public class Program
             {
                 Title = "Desarrollo de Software",
                 Description = "### API para una plataforma de comercio electrónico (e-commerce)." +
-                "\n ### Integrantes: \n ### - Cristo Ochi, Rocío \n ### - Cabrera Navarro, Tomas\n ### - Morhill, Samir Ricardo",
+                "\n ### Integrantes: \n ### - Martín, Kevin - 53315 " +
+                                    "\n ### - Simón, Juan Enrique - 52543 " +
+                                    "\n ### - Santillán, Facundo Nahuel - 52405 " +
+                                    "\n ### - Coronel, Hernan Jorge - 52435 " +
+                                    "\n ### - Cabrera Navarro, Tomas",
                 Version = "v1",
             });
             o.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
