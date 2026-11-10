@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36203.30
+VisualStudioVersion = 17.14.36203.30 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dsw2025Tpi.Api", "Dsw2025Tpi.Api\Dsw2025Tpi.Api.csproj", "{3E1F7E28-184B-4B7A-8C2E-BE3D7BF65F67}"
 EndProject
@@ -12,10 +12,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dsw2025Tpi.Data", "Dsw2025Tpi.Data\Dsw2025Tpi.Data.csproj", "{E34B93C6-D34C-409A-AAF4-908795FFEB4E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dsw2025Tpi.Application", "Dsw2025Tpi.Application\Dsw2025Tpi.Application.csproj", "{AD606BCA-F693-45E2-A6BD-3C7FCBADE0D2}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dsw2025Tpi.IntegrationTests", "Dsw2025Tpi.IntegrationTests", "{40ADAE2B-55E6-4429-9819-9A3C6E8E0EF9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dsw2025Tpi.IntegrationTests", "Dsw2025Tpi.IntegrationTests.csproj\Dsw2025Tpi.IntegrationTests.csproj", "{59F3E750-7A32-4F25-9B68-E8CE3AA64846}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,10 +35,6 @@ Global
 		{AD606BCA-F693-45E2-A6BD-3C7FCBADE0D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD606BCA-F693-45E2-A6BD-3C7FCBADE0D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD606BCA-F693-45E2-A6BD-3C7FCBADE0D2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{59F3E750-7A32-4F25-9B68-E8CE3AA64846}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{59F3E750-7A32-4F25-9B68-E8CE3AA64846}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{59F3E750-7A32-4F25-9B68-E8CE3AA64846}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{59F3E750-7A32-4F25-9B68-E8CE3AA64846}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,8 +44,6 @@ Global
 		{6623891D-E73F-46D7-AF28-BAF345304820} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{E34B93C6-D34C-409A-AAF4-908795FFEB4E} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{AD606BCA-F693-45E2-A6BD-3C7FCBADE0D2} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
-		{40ADAE2B-55E6-4429-9819-9A3C6E8E0EF9} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
-		{59F3E750-7A32-4F25-9B68-E8CE3AA64846} = {40ADAE2B-55E6-4429-9819-9A3C6E8E0EF9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E30FA157-23DF-49B5-AD66-0394DCB75767}
