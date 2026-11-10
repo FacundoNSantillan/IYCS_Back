@@ -25,7 +25,13 @@ namespace Dsw2025Tpi.Application.Services
             var validationErrors = new Dictionary<string, string>();
 
             if (request.CurrentUnitPrice <= 0) validationErrors.Add("price", "El precio debe ser mayor a cero.");
-            if (request.StockQuantity < 0) validationErrors.Add("stock", "El stock no puede ser negativo.");
+            if (request.StockQuantity <= 0) validationErrors.Add("stock", "El stock debe ser mayor a cero.");
+
+            if (validationErrors.Count > 0)
+            {
+                var jsonError = JsonSerializer.Serialize(validationErrors);
+                throw new BadRequestException(jsonError);
+            }
 
             var skuExists = await _repository.First<Product>(p => p.Sku == request.Sku);
             if (skuExists != null) validationErrors.Add("sku", "Este SKU ya está en uso.");
@@ -90,8 +96,11 @@ namespace Dsw2025Tpi.Application.Services
 
             if (!string.IsNullOrWhiteSpace(search))
             {
-                search = search.ToLower().Trim();
-                query = query.Where(p => p.Name.ToLower().Contains(search));
+                var normalizedSearch = search.Trim();
+                query = query.Where(p =>
+                    (p.Name != null && p.Name.Contains(normalizedSearch, StringComparison.OrdinalIgnoreCase)) ||
+                    (p.Sku != null && p.Sku.Contains(normalizedSearch, StringComparison.OrdinalIgnoreCase)) ||
+                    (p.InternalCode != null && p.InternalCode.Contains(normalizedSearch, StringComparison.OrdinalIgnoreCase)));
             }
 
             var productsFiltered = query.ToList();
