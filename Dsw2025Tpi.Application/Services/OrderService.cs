@@ -21,34 +21,60 @@ namespace Dsw2025Tpi.Application.Services
 
         public async Task<OrderModel.OrderResponse> CreateOrderAsync(OrderModel.OrderRequest request)
         {
-            Guid finalCustomerId;
+            Guid finalCustomerId = Guid.Empty;
             Customer? user = null;
 
             if (!string.IsNullOrEmpty(request.UserName))
             {
                 user = await _repository.First<Customer>(u => u.UserId == request.UserName);
-
-                if (user == null)
-                    throw new BadRequestException($"No existe un cliente asociado al usuario '{request.UserName}'");
-
-                finalCustomerId = user.CustomerId;
+                if (user != null) finalCustomerId = user.CustomerId;
             }
             else if (request.CustomerId.HasValue)
             {
                 finalCustomerId = request.CustomerId.Value;
                 user = await _repository.First<Customer>(u => u.CustomerId == finalCustomerId);
             }
-            else
-            {
-                throw new BadRequestException ("No se pudo identificar al cliente.");
-            }
-                if (request.OrderItems == null || !request.OrderItems.Any())
+
+            // Validación del cliente corregida
+            if (user == null)
+                throw new BadRequestException($"No existe el cliente '{finalCustomerId}'");
+
+            if (request.OrderItems == null || !request.OrderItems.Any())
                 throw new BadRequestException("The order must have at least one item");
 
             decimal total = 0;
             var orderItems = new List<OrderItem>();
-
             var productNames = new Dictionary<Guid, string>();
+
+            // Nuevas colecciones para la validación previa
+            var validatedItems = new List<(OrderItemModel.Request Request, Product Product)>();
+            var productsById = new Dictionary<Guid, Product>();
+            var requestedQuantities = new Dictionary<Guid, int>();
+
+            // 1. Fase de Validación de Stock
+            foreach (var item in request.OrderItems)
+            {
+                if (!productsById.TryGetValue(item.ProductId, out var product))
+                {
+                    product = await _repository.First<Product>(p => p.Id == item.ProductId);
+                    if (product == null)
+                        throw new BadRequestException($"Product {item.ProductId} not found");
+
+                    if (!product.IsActive)
+                        throw new BadRequestException($"El producto '{product.Name}' ya no está disponible.");
+
+                    productsById[product.Id] = product;
+                }
+
+                var requestedQuantity = requestedQuantities.GetValueOrDefault(product.Id) + item.Quantity;
+
+                if (product.StockQuantity < requestedQuantity)
+                    throw new BadRequestException($"Insufficient stock for the product {product.Name}");
+
+                requestedQuantities[product.Id] = requestedQuantity;
+                productNames[product.Id] = product.Name;
+                validatedItems.Add((item, product));
+            }
 
             var order = new Order
             {
@@ -63,19 +89,11 @@ namespace Dsw2025Tpi.Application.Services
 
             await _repository.Add(order);
 
-            foreach (var item in request.OrderItems)
+            // 2. Fase de Persistencia y Descuento de Stock
+            foreach (var validatedItem in validatedItems)
             {
-                var product = await _repository.First<Product>(p => p.Id == item.ProductId);
-                if (product == null)
-                    throw new BadRequestException($"Product {item.ProductId} not found");
-
-                if (!product.IsActive)
-                    throw new BadRequestException($"El producto '{product.Name}' ya no está disponible.");
-
-                if (product.StockQuantity < item.Quantity)
-                    throw new BadRequestException($"Insufficient stock for the product {product.Name}");
-
-                productNames[product.Id] = product.Name;
+                var item = validatedItem.Request;
+                var product = validatedItem.Product;
 
                 decimal subTotal = product.CurrentUnitPrice * item.Quantity;
                 total += subTotal;
@@ -94,7 +112,7 @@ namespace Dsw2025Tpi.Application.Services
                 if (product.StockQuantity <= 0)
                 {
                     product.StockQuantity = 0;
-                    product.IsActive = false; 
+                    product.IsActive = false;
                 }
                 await _repository.Update(product);
             }
@@ -109,10 +127,10 @@ namespace Dsw2025Tpi.Application.Services
                     order.Id,
                     order.Date,
                     order.OrderItems.Select(i => new OrderItemModel.Response(
-                          i.ProductId, 
-                          productNames.ContainsKey(i.ProductId) ? productNames[i.ProductId] : "Producto", 
-                          i.Quantity, 
-                          i.UnitPrice, 
+                          i.ProductId,
+                          productNames.ContainsKey(i.ProductId) ? productNames[i.ProductId] : "Producto",
+                          i.Quantity,
+                          i.UnitPrice,
                           i.SubTotal
                     )).ToList(),
                     order.ShippingAddress,
