@@ -152,13 +152,14 @@ public class Program
 
         var app = builder.Build();
 
-        if (!app.Environment.IsEnvironment("Testing"))
+        using (var scope = app.Services.CreateScope())
         {
-            using var scope = app.Services.CreateScope();
+            scope.ServiceProvider.GetRequiredService<AuthenticateContext>().Database.Migrate();
+            scope.ServiceProvider.GetRequiredService<Dsw2025TpiContext>().Database.Migrate();
         }
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("Swagger:Enabled"))
+        // Configure the HTTP request pipeline.
+        if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("Swagger:Enabled"))
         {
             app.UseSwagger();
             app.UseSwaggerUI();
