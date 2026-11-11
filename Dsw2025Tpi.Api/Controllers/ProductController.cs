@@ -58,12 +58,41 @@ namespace Dsw2025Tpi.Api.Controllers
                     return BadRequest("Page size must be between 1 and 100.");
                 }
 
-                var products = await _productService.GetAllProducts(search, isActive, hasStock, pageNumber, pageSize);
+                var products = await _productService.GetAllProducts(search, true, hasStock, pageNumber, pageSize);
 
                 if (products is null || !products.Items.Any())
                 {
                     return NotFound("There aren´t products available.");
                 }
+
+                return Ok(products);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error obtaining products: {ex.Message}");
+            }
+        }
+
+        [HttpGet("/api/products/admin")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetAllProductsAdmin(string? search,
+            [FromQuery] bool? isActive,
+            [FromQuery] bool? hasStock,
+            [FromQuery(Name = "pageNumber")] int pageNumber = 1,
+            [FromQuery(Name = "pageSize")] int pageSize = 10)
+        {
+            try
+            {
+                if (pageNumber <= 0)
+                    return BadRequest("Page number must be greater than 0.");
+
+                if (pageSize <= 0 || pageSize > 100)
+                    return BadRequest("Page size must be between 1 and 100.");
+
+                var products = await _productService.GetAllProducts(search, isActive, hasStock, pageNumber, pageSize);
+
+                if (products is null || !products.Items.Any())
+                    return NotFound("There aren´t products available.");
 
                 return Ok(products);
             }
