@@ -38,7 +38,29 @@ jobs:
           name: api-publish
           path: ./publish
 
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. Obtener el código
+        uses: actions/checkout@v4
+
+      - name: 2. Instalar .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: 3. Restaurar paquetes
+        run: dotnet restore Dsw2025Tpi.sln
+
+      - name: 4. Compilar tests
+        run: dotnet build Dsw2025Tpi.sln --configuration Release --no-restore
+
+      - name: 5. Ejecutar tests
+        run: dotnet test Dsw2025Tpi.sln --configuration Release --no-build --no-restore
+
   docker-build:
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: 1. Obtener el código
@@ -48,7 +70,7 @@ jobs:
         run: docker build -t dsw-api:${{ github.sha }} -f Dockerfile .
 
   deploy:
-    needs: [build, docker-build]
+    needs: [build, test, docker-build]
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
