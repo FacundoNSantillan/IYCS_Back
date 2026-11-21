@@ -23,7 +23,7 @@ public class OrderEndpointsTests
     }
 
     [Fact]
-    public async Task CreateOrder_WhenAuthenticatedWithValidData_PersistsOrderAndDecrementsStock()
+    public async Task CreateOrder_WhenAuthenticatedWithValidData_ReturnsCreatedAndPersistsOrderAndStockInSqlite()
     {
         using var factory = new CustomWebApplicationFactory();
         await factory.InitializeDatabasesAsync();
@@ -54,7 +54,7 @@ public class OrderEndpointsTests
     }
 
     [Fact]
-    public async Task CreateOrder_WhenStockIsInsufficient_ReturnsBadRequestAndDoesNotPersistOrder()
+    public async Task CreateOrder_WhenStockIsInsufficient_ReturnsBadRequestWithErrorMessage()
     {
         using var factory = new CustomWebApplicationFactory();
         await factory.InitializeDatabasesAsync();

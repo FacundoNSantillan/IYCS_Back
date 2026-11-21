@@ -10,7 +10,7 @@ namespace Dsw2025Tpi.IntegrationTests.Products;
 public class ProductEndpointsTests
 {
     [Fact]
-    public async Task CreateProduct_WhenUnauthenticated_ReturnsUnauthorized()
+    public async Task AddProduct_WhenUnauthenticatedOrNotAdmin_ReturnsUnauthorizedOrForbidden()
     {
         using var factory = new CustomWebApplicationFactory();
         await factory.InitializeDatabasesAsync();
@@ -28,7 +28,7 @@ public class ProductEndpointsTests
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
     [Fact]
-    public async Task CreateProduct_WhenAuthenticatedAsClient_ReturnsForbidden()
+    public async Task AddProduct_WhenAuthenticatedAsClient_ReturnsForbidden()
     {
         using var factory = new CustomWebApplicationFactory();
         await factory.InitializeDatabasesAsync();
@@ -48,7 +48,7 @@ public class ProductEndpointsTests
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
     }
     [Fact]
-    public async Task CreateProduct_WhenAuthenticatedAsAdmin_PersistsInSqliteAndReturnsCreated()
+    public async Task AddProduct_WhenAuthenticatedAsAdmin_PersistsInSqliteAndReturnsCreated()
     {
         using var factory = new CustomWebApplicationFactory();
         await factory.InitializeDatabasesAsync();
@@ -74,7 +74,7 @@ public class ProductEndpointsTests
         Assert.Equal(10, product.StockQuantity);
     }
     [Fact]
-    public async Task CreateProduct_WhenSkuAlreadyExists_ReturnsBadRequest()
+    public async Task AddProduct_WhenSkuAlreadyExistsInDatabase_ReturnsConflictStatusCode()
     {
         using var factory = new CustomWebApplicationFactory();
         await factory.InitializeDatabasesAsync();
@@ -119,7 +119,7 @@ public class ProductEndpointsTests
         Assert.Equal(1, payload.TotalCount);
     }
     [Fact]
-    public async Task GetProducts_PublicEndpoint_ReturnsOnlyActiveProducts()
+    public async Task GetProducts_PublicEndpoint_ReturnsOkWithPaginatedJsonStructure()
     {
         using var factory = new CustomWebApplicationFactory();
         await factory.InitializeDatabasesAsync();
@@ -143,7 +143,7 @@ public class ProductEndpointsTests
         Assert.True(product.IsActive);
     }
     [Fact]
-    public async Task GetAuthProducts_WhenCalledByAdmin_IncludesInactiveProducts()
+    public async Task GetAuthProducts_AdminEndpoint_WhenCalledByAdmin_IncludesInactiveProducts()
     {
         using var factory = new CustomWebApplicationFactory();
         await factory.InitializeDatabasesAsync();

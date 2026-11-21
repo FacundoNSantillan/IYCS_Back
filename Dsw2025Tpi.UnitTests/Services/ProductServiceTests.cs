@@ -11,7 +11,7 @@ namespace Dsw2025Tpi.UnitTests.Services;
 public class ProductServiceTests
 {
     [Fact]
-    public async Task CreateProduct_WithValidData_ReturnsProductAndCallsRepositoryAdd()
+    public async Task AddProduct_WithValidData_ReturnsProductAndCallsRepositoryAdd()
     {
         var repository = CreateRepositoryWithAvailableProductData();
         repository.Setup(r => r.Add(It.IsAny<Product>()))
@@ -33,7 +33,7 @@ public class ProductServiceTests
     }
  
     [Fact]
-    public async Task CreateProduct_WithDuplicateSku_ThrowsBadRequestAndDoesNotAdd()
+    public async Task AddProduct_WithDuplicateSku_ThrowsDuplicatedEntityException()
     {
         var repository = new Mock<IRepository>();
         repository.Setup(r => r.First<Product>(
@@ -51,7 +51,7 @@ public class ProductServiceTests
     [Theory]
     [InlineData(0, 10)]
     [InlineData(100, 0)]
-    public async Task CreateProduct_WithInvalidPriceOrStock_ThrowsBeforeUsingRepository(decimal price, decimal stock)
+    public async Task AddProduct_WithInvalidStockOrPrice_ThrowsInvalidDataException(decimal price, decimal stock)
     {
         var repository = new Mock<IRepository>(MockBehavior.Strict);
         var service = new ProductService(repository.Object);
