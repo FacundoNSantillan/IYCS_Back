@@ -28,7 +28,7 @@ public class OrderServiceTests
     }
 
     [Fact]
-    public async Task CreateOrder_WhenProductStockIsInsufficient_ThrowsAndDoesNotPersistOrder()
+    public async Task CreateOrder_WhenProductStockIsInsufficient_ThrowsInsufficientStockException()
     {
         var customer = CreateCustomer();
         var product = new Product("SKU-001", "CODE-001", "Mouse Gamer", "Product for tests", 10, 2);
@@ -66,7 +66,7 @@ public class OrderServiceTests
     }
 
     [Fact]
-    public async Task CreateOrder_WhenCustomerDoesNotExist_ThrowsAndDoesNotChangeProductsOrOrders()
+    public async Task CreateOrder_WhenCustomerDoesNotExist_ThrowsCustomerNotFoundException()
     {
         var repository = new Mock<IRepository>();
         var service = new OrderService(repository.Object);

@@ -8,7 +8,7 @@ namespace Dsw2025Tpi.UnitTests.Services;
 public class ProductServiceQueryTests
 {
     [Fact]
-    public async Task GetAllProducts_WhenActiveFilterIsTrue_ReturnsOnlyActiveProducts()
+    public async Task GetProducts_WhenIncludeInactiveIsFalse_ReturnsOnlyActiveProducts()
     {
         var active = CreateProduct("SKU-A", "CODE-A", "Active product", true);
         var inactive = CreateProduct("SKU-I", "CODE-I", "Inactive product", false);
@@ -22,7 +22,7 @@ public class ProductServiceQueryTests
     }
  
     [Fact]
-    public async Task GetAllProducts_WithPaginationFilter_AppliesSkipAndTakeCorrectly()
+    public async Task GetProducts_WithPaginationFilter_AppliesSkipAndTakeCorrectly()
     {
         var products = Enumerable.Range(1, 15)
             .Select(index => CreateProduct($"SKU-{index:D2}", $"CODE-{index:D2}", $"Product {index:D2}", true))
@@ -41,7 +41,7 @@ public class ProductServiceQueryTests
     [InlineData("mouse", "Mouse Gamer")]
     [InlineData("SKU-TECLADO", "Teclado Mecánico")]
     [InlineData("CODE-MONITOR", "Monitor")]
-    public async Task GetAllProducts_WithSearchTerm_FiltersByNameSkuOrInternalCode(string search, string expectedName)
+    public async Task GetProducts_WithSearchTerm_FiltersByNameSkuOrInternalCode(string search, string expectedName)
     {
         var products = new List<Product>
         {
